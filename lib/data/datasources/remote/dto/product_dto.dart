@@ -25,4 +25,17 @@ class ProductDTO {
     quantity = json['quantity'];
     gallery = json['gallery'].cast<String>();
   }
+
+  @override
+  String toString() {
+    return 'ProductDTO{id: $id, name: $name, address: $address, price: $price, img: $img, quantity: $quantity, gallery: $gallery}';
+  }
+  
+  static ProductDTO parser(Map<String,dynamic> json){
+    return ProductDTO.fromJson(json);
+  }
+
+  static List<ProductDTO> parserListProducts(List<dynamic> json){
+    return (json as List).map((e) => ProductDTO.fromJson(e)).toList();
+  }
 }

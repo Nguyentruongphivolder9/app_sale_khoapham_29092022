@@ -3,8 +3,12 @@ import 'package:app_sale_khoapham_29092022/common/constants/api_constant.dart';
 import 'package:app_sale_khoapham_29092022/common/utils/extension.dart';
 import 'package:app_sale_khoapham_29092022/common/widgets/loading_widget.dart';
 import 'package:app_sale_khoapham_29092022/data/datasources/remote/api_request.dart';
+import 'package:app_sale_khoapham_29092022/data/models/cart.dart';
 import 'package:app_sale_khoapham_29092022/data/models/product.dart';
+import 'package:app_sale_khoapham_29092022/data/repositories/cart_reponsitory.dart';
 import 'package:app_sale_khoapham_29092022/data/repositories/product_repository.dart';
+import 'package:app_sale_khoapham_29092022/presentation/features/cart/cart_bloc.dart';
+import 'package:app_sale_khoapham_29092022/presentation/features/cart/cart_event.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/home/home_bloc.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/home/home_event.dart';
 import 'package:badges/badges.dart';
@@ -39,8 +43,21 @@ class _HomePageState extends State<HomePage> {
             return bloc!;
           },
         ),
+        ProxyProvider<ApiRequest, CartRepository>(
+          create: (context) => CartRepository(),
+          update: (context, request, repository) {
+            repository?.updateApiRequest(request);
+            return repository!;
+          },
+        ),
+        ProxyProvider<CartRepository, CartBloc>(
+          create: (context) => CartBloc(),
+          update: (context, repository, cartBloc) {
+            cartBloc?.updateCartRepo(repository);
+            return cartBloc!;
+          },
+        )
       ],
-      
       child: HomeContainer(),
     );
   }
@@ -53,12 +70,15 @@ class HomeContainer extends StatefulWidget {
 
 class _HomeContainerState extends State<HomeContainer> {
   late ProductBloc bloc;
+  late CartBloc cartBloc;
 
   @override
   void initState() {
     super.initState();
     bloc = context.read();
+    cartBloc = context.read();
     bloc.eventSink.add(FetchProductEvent());
+    cartBloc.eventSink.add(FetchCartEvent());
   }
 
   @override
@@ -92,13 +112,36 @@ class _HomeContainerState extends State<HomeContainer> {
                     color: Colors.black,
                   )
                 ),
-                IconButton(
-                  onPressed: () {
-                  }, 
-                  icon: Icon(
-                    Icons.shopping_bag_outlined,
-                    color: Colors.black,
-                  )
+                Consumer<CartBloc>(
+                  builder: (context, bloc, child){
+                    return StreamBuilder<Cart>(
+                    initialData: null,
+                    stream: bloc.streamController.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError || snapshot.data == null || snapshot.data?.products.isEmpty == true) {
+                        return IconButton(
+                            icon: Icon(Icons.shopping_cart),
+                            onPressed: () {
+                              Navigator.pushNamed(context, "cart");
+                            }
+                        );
+                      }
+                      int count = snapshot.data?.products.length ?? 0;
+
+                      return Container(
+                        margin: EdgeInsets.only(right: 10, top: 5),
+                        child: Badge(
+                            padding: EdgeInsets.all(10),
+                            badgeContent: Text(count.toString(),
+                                style: TextStyle(fontSize: 15, color: Colors.white)),
+                            child: IconButton(
+                                icon: Icon(Icons.shopping_cart),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, "cart" );
+                                })),
+                      );
+                    });
+                  }
                 ),
               ]
             ),
@@ -159,7 +202,9 @@ class _HomeContainerState extends State<HomeContainer> {
                       Text("Giá : ${formatPrice(product.price)} đ",
                           style: TextStyle(fontSize: 12)),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          cartBloc.eventSink.add(AddCartEvent(product.id));
+                        },
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.resolveWith((states) {

@@ -47,4 +47,29 @@ class ApiRequest {
     
     return receivePort.first;
   }
+
+  Future getCart() {
+    return _dio.get(ApiConstant.CART,
+        options: Options(
+            validateStatus: (status) {
+              return status! <= 500;
+            },
+            headers: {
+              "authorization":
+                  "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
+            }));
+  }
+
+  Future addToCart(String idProduct) {
+    return _dio.post(ApiConstant.ADD_CART,
+        data: {"id_product": idProduct},
+        options: Options(
+            validateStatus: (status) {
+              return status! <= 500;
+            },
+            headers: {
+              "authorization":
+                  "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
+            }));
+  }
 }

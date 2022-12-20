@@ -51,4 +51,16 @@ class CartRepository {
     }
     return completer.future;
   }
+
+  Future<String> confirmCart() async{
+    Completer<String> completer  = Completer();
+    try{
+     Response<dynamic> response = await _apiRequest.confirmCart();
+     String resourceDTO = response.data["data"];
+     completer.complete(resourceDTO);
+    }catch(e){
+      completer.completeError(e.toString());
+    }
+    return completer.future;
+  }
 }

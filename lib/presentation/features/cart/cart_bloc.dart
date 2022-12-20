@@ -37,6 +37,12 @@ class CartBloc extends BaseBloc {
       case IncreaseCartItemEvent:
         handleIncreaseCartEvent(event as IncreaseCartItemEvent);
         break;
+      case DecreaseCartItemEvent:
+        handleDecreaseCartEvent(event as DecreaseCartItemEvent);
+        break;
+      case ConfirmCartEvent:
+        handleConfirmCartEvent(event as ConfirmCartEvent);
+        break;
     }
   }
 
@@ -125,6 +131,19 @@ class CartBloc extends BaseBloc {
       messageSink.add(e.toString());
       loadingSink.add(false);
     }
+  }
+
+  void handleConfirmCartEvent(ConfirmCartEvent event) async{
+    loadingSink.add(true);
+    try{
+      String resource = await _cartRepository.confirmCart();
+      progressSink.add(ConfirmCartSuccessEvent(resource));
+      _cartModel!.clear();
+      _streamController.add(_cartModel!);
+    }catch(e){
+      progressSink.add(ConfirmCartFailedEvent(e.toString()));
+    }
+    loadingSink.add(false);
   }
 
   @override

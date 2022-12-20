@@ -85,4 +85,15 @@ class ApiRequest {
               "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
         }));
   }
+
+  Future confirmCart() {
+    return _dio.post(ApiConstant.CONFIRM_CART,
+        data: {"id_cart": AppCache.getString(VariableConstant.CART_ID),
+          "status" : false},
+        options: Options(
+            headers: {
+              "authorization":
+                  "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
+            }));
+  }
 }

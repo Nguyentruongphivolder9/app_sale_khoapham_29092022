@@ -1,3 +1,4 @@
+import 'package:app_sale_khoapham_29092022/common/widgets/progress_listener_widget.dart';
 import 'package:app_sale_khoapham_29092022/data/models/cart.dart';
 import 'package:app_sale_khoapham_29092022/data/models/product.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/cart/cart_event.dart';
@@ -37,7 +38,7 @@ class _CartPageState extends State<CartPage> {
             bloc?.updateCartRepo(repository);
             return bloc!;
           },
-        )
+        ),
       ],
       child: CartContainer(),
     );
@@ -79,30 +80,44 @@ class _CartContainerState extends State<CartContainer> {
                 children: [
                   Expanded(
                     child: ListView.builder(
-                        itemCount: ProductCart.length, // ?? 0
-                        itemBuilder: (lstContext, index) =>
-                            _buildItem(ProductCart[index], context)),
+                      itemCount: ProductCart.length, // ?? 0
+                      itemBuilder: (lstContext, index) =>
+                          _buildItem(ProductCart[index], context)),
                   ),
                   Container(
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.teal,
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: Text(
-                          "Tổng tiền : ${formatPrice(snapshot.data?.price ?? 0)} đ",
-                          style: TextStyle(fontSize: 25, color: Colors.white))),
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.teal,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    child: Text(
+                        "Tổng tiền : ${formatPrice(snapshot.data?.price ?? 0)} đ",
+                        style: TextStyle(fontSize: 25, color: Colors.white))),
                   Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      padding: EdgeInsets.all(10),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                            backgroundColor:
-                            MaterialStateProperty.all(Colors.deepOrange)),
-                        child: Text("Order",
-                            style: TextStyle(color: Colors.white, fontSize: 25)),
-                      ))
+                    margin: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        cartBloc.eventSink.add(ConfirmCartEvent());
+                      },
+                      style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStateProperty.all(Colors.deepOrange)),
+                      child: Text("Order",
+                          style: TextStyle(color: Colors.white, fontSize: 25)),
+                    )
+                  ),
+                  ProgressListenerWidget<CartBloc>(child: Container(), callback: (event){
+                    switch(event.runtimeType){
+                      case ConfirmCartSuccessEvent:
+                        Navigator.pop(context);
+                        showSnackBar(context, (event as ConfirmCartSuccessEvent).msg);
+                        break;
+                      case ConfirmCartFailedEvent:
+                        showSnackBar(context, (event as ConfirmCartFailedEvent).msg);
+                        break;
+                    }
+                  })
                 ],
               );
             } else {

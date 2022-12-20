@@ -154,7 +154,9 @@ class _CartContainerState extends State<CartContainer> {
                       Row(
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              cartBloc.eventSink.add(DecreaseCartItemEvent(product.id, 1));
+                            },
                             child: Text("-"),
                           ),
                           Padding(

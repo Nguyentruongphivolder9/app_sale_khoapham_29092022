@@ -112,6 +112,21 @@ class CartBloc extends BaseBloc {
     }
   }
 
+  void handleDecreaseCartEvent(DecreaseCartItemEvent event) async{
+    loadingSink.add(true);
+    try{
+      int quantity = getQuantityFromIdProduct(event.idProduct);
+      quantity -= event.quantity;
+      AppResource<CartDTO> resourceDTO = await _cartRepository.updateCart(event.idProduct, quantity);
+      
+      if (resourceDTO.data == null) return;
+      handleFetchCartEvent();
+    } catch (e) {
+      messageSink.add(e.toString());
+      loadingSink.add(false);
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();

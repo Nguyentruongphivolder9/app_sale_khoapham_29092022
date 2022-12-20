@@ -34,3 +34,7 @@ bool isNotEmpty(List<String> data) {
   }
   return true;
 }
+
+String formatPrice(int price){
+  return NumberFormat("#,###", "en_US").format(price);
+}

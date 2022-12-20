@@ -34,6 +34,9 @@ class CartBloc extends BaseBloc {
       case AddCartEvent:
         handleAddCartEvent(event as AddCartEvent);
         break;
+      case IncreaseCartItemEvent:
+        handleIncreaseCartEvent(event as IncreaseCartItemEvent);
+        break;
     }
   }
 
@@ -69,6 +72,40 @@ class CartBloc extends BaseBloc {
       AppCache.setString(key: VariableConstant.CART_ID,value: _cartModel!.id.toString());
       _streamController.sink.add(_cartModel!);
       loadingSink.add(false);
+    } catch (e) {
+      messageSink.add(e.toString());
+      loadingSink.add(false);
+    }
+  }
+
+  int getQuantityFromIdProduct(String id){
+    int quantity = 0;
+    if(_cartModel == null) {
+      return 0;
+    }
+
+    for(int i = 0; i<_cartModel!.products.length;i++){
+      if(_cartModel!.products[i].id == id){
+        quantity = _cartModel!.products[i].quantity;
+      }
+    }
+    return quantity;
+  }
+
+  void handleIncreaseCartEvent(IncreaseCartItemEvent event) async{
+    loadingSink.add(true);
+    try{
+      int quantity = getQuantityFromIdProduct(event.idProduct);
+      AppResource<CartDTO> resourceDTO;
+      if(quantity == 0) {
+        quantity = event.quantity;
+        resourceDTO = await _cartRepository.addToCart(event.idProduct);
+      } else {
+        quantity += event.quantity;
+        resourceDTO = await _cartRepository.updateCart(event.idProduct, quantity);
+      }
+      if (resourceDTO.data == null) return;
+      handleFetchCartEvent();
     } catch (e) {
       messageSink.add(e.toString());
       loadingSink.add(false);

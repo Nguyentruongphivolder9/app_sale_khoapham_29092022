@@ -72,4 +72,17 @@ class ApiRequest {
                   "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
             }));
   }
+
+  Future updateCart(String idProduct, int quantity) {
+    return _dio.post(ApiConstant.UPDATE_CART,
+        data: {
+          "id_product": idProduct,
+          "id_cart": AppCache.getString(VariableConstant.CART_ID),
+          "quantity": quantity
+        },
+        options: Options(headers: {
+          "authorization":
+              "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
+        }));
+  }
 }

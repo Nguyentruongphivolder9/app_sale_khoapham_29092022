@@ -163,7 +163,9 @@ class _CartContainerState extends State<CartContainer> {
                                 style: TextStyle(fontSize: 16)),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              cartBloc.eventSink.add(IncreaseCartItemEvent(product.id, 1));
+                            },
                             child: Text("+"),
                           ),
                         ],

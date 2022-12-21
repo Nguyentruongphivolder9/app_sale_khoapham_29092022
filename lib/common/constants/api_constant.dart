@@ -9,4 +9,5 @@ class ApiConstant {
   static final String ADD_CART = "/cart/add";
   static final String UPDATE_CART = "/cart/update";
   static final String CONFIRM_CART = "/cart/conform";
+  static final String ORDER_HISTORY = "/order/history";
 }

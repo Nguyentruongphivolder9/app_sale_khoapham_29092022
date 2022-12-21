@@ -106,6 +106,7 @@ class _HomeContainerState extends State<HomeContainer> {
               children: [
                 IconButton(
                   onPressed: () {
+                    Navigator.pushNamed(context,"order-history");
                   }, 
                   icon: Icon(
                     Icons.history_outlined,

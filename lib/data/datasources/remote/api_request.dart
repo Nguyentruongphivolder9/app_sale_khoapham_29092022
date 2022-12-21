@@ -96,4 +96,16 @@ class ApiRequest {
                   "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
             }));
   }
+
+  Future orderHistory(){
+    return _dio.post(ApiConstant.ORDER_HISTORY,
+        options: Options(
+            validateStatus: (status) {
+              return status! <= 500;
+            },
+            headers: {
+              "authorization":
+              "Bearer ${AppCache.getString(VariableConstant.TOKEN)}",
+            }));
+  }
 }

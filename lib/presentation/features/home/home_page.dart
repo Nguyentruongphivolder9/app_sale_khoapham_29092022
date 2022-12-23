@@ -123,7 +123,7 @@ class _HomeContainerState extends State<HomeContainer> {
                         return IconButton(
                             icon: Icon(Icons.shopping_cart),
                             onPressed: () {
-                              Navigator.pushNamed(context, "cart");
+                              Navigator.pushNamed(context, "cart_empty");
                             }
                         );
                       }

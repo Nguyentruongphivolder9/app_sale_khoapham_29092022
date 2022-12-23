@@ -99,7 +99,7 @@ class _OrderHistoryContainerState extends State<_OrderHistoryContainer> {
           side: BorderSide(
             color: Colors.black,
           ),
-          borderRadius: BorderRadius.circular(20.0), //<-- SEE HERE
+          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Container(
           margin: EdgeInsets.symmetric(horizontal:25,vertical: 10),

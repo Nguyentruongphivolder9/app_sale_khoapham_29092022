@@ -36,7 +36,6 @@ class OrderHistoryBloc extends BaseBloc {
       if(resourceDTO.data == null) return;
       
       List<CartDTO> listCartDTO = resourceDTO.data!;
-      print("listCartDTO length = ${listCartDTO.length}");
       List<Cart> listCart = [];
       listCartDTO.forEach((element) {
         List<dynamic> listProductResponse = element.products!;
@@ -44,13 +43,7 @@ class OrderHistoryBloc extends BaseBloc {
         List<Product> listProduct = listProductDTO.map((e){
           return Product(e.id, e.name, e.address, e.price, e.img, e.quantity, e.gallery);
         }).toList();
-
-        print("order bloc : dataCreated = ${element.dateCreated}");
         listCart.add(Cart(element.id, listProduct, element.idUser, element.price, element.dateCreated));
-      });
-
-      listCart.forEach((element) {
-        print("element ${element.toString()}");
       });
       _streamController.sink.add(listCart);
       loadingSink.add(false);

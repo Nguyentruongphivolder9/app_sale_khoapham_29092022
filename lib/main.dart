@@ -2,6 +2,7 @@ import 'package:app_sale_khoapham_29092022/data/datasources/local/cache/app_cach
 import 'package:app_sale_khoapham_29092022/presentation/features/cart/cart_page.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/cart/cart_page_empty.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/home/home_page.dart';
+import 'package:app_sale_khoapham_29092022/presentation/features/order_history/order_history_detail_page.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/order_history/order_history_page.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/sign_in/sign_in_page.dart';
 import 'package:app_sale_khoapham_29092022/presentation/features/sign_up/sign_up_page.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         "home": (context) => HomePage(),
         "cart": (context) => CartPage(),
         "order-history": (context) => OrderHistoryPage(),
+        "order-detail": (context) => OrderDetailPage(),
         "cart_empty":(context) => CartEmptyPage()
       },
       initialRoute: "splash",

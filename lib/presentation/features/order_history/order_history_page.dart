@@ -146,7 +146,9 @@ class _OrderHistoryContainerState extends State<_OrderHistoryContainer> {
           )
         ),
       ),
-      onTap: (){},
+      onTap: (){
+        Navigator.pushNamed(context, "order-detail");
+      },
     );
   }
 }
